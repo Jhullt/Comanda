@@ -1,0 +1,121 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>COMANDA</title>
+  <link rel="stylesheet" href="{% static 'css/garzon.css' %}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="icon" href="{% static 'icons/logo.ico' %}" type="image/x-icon">
+</head>
+<body>
+
+  <header>
+    <h1>COMANDA</h1>
+    <div class="contenedor-links">
+      <div class="link">MESAS</div>
+      <div class="link">HISTORIAL</div>
+    </div>
+  </header>
+
+  <main>
+    <!-- Vista de mesas -->
+    <section id="vista-mesas">
+      <div class="contenedor-mesas">
+        {% for i in "12345678910"|make_list %}
+        <div class="mesa" onclick="abrirCarta('Mesa 0{{ i }}')">Mesa 0{{ i }}</div>
+        {% endfor %}
+      </div>
+    </section>
+
+    <!-- Vista crear comanda -->
+    <section id="vista-carta" class="oculto">
+      <div class="registrar-comanda-izquierda">
+
+        <div class="registrar-comanda-izquierda-arriba">
+          <button onclick="volver()">
+            <img src="{% static 'icons/volver-white.png' %}" alt="">
+          </button>
+          <h2 id="titulo-mesa">Menú</h2>
+        </div>
+
+        <div class="registrar-comanda-izquierda-abajo">
+          <div class="tabs-categorias">
+            <button class="tab-activa">Plato principal</button>
+            <button>Ensaladas</button>
+            <button>Postres</button>
+            <button>Bebestibles</button>
+          </div>
+        </div>
+
+        <div class="registrar-comanda-izquierda-final">
+          <div class="productos">
+            <!-- Productos de ejemplo -->
+            {% for i in "12345678"|make_list %}
+            <div class="producto">
+              <img src="img/cerveza.png" alt="Cerveza" />
+              <p>Cerveza<br><strong>$1.800</strong></p>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+
+      </div>
+
+      <div class="registrar-comanda-centro"></div>
+
+      <div class="registrar-comanda-derecha">
+
+        <div class="registrar-comanda-derecha-arriba">
+
+          <div class="registrar-comanda-garzon">
+            <h1>Garzón Franco</h1>
+          </div>
+
+          <div class="registrar-comanda-numero-clientes">
+            <i class="fa-solid fa-user" style="color: white;"></i>
+            <span id="numero-seleccionado">1</span>
+            <button class="boton-dropdown" onclick="toggleDropdown()">
+              <i class="fa-solid fa-chevron-down"></i>
+            </button>
+          
+            <div id="dropdown-numeros" class="dropdown oculto">
+              <div onclick="seleccionarNumero(1)">1</div>
+              <div onclick="seleccionarNumero(2)">2</div>
+              <div onclick="seleccionarNumero(3)">3</div>
+              <div onclick="seleccionarNumero(4)">4</div>
+              <div onclick="seleccionarNumero(5)">5</div>
+              <div onclick="seleccionarNumero(6)">6</div>
+              <div onclick="seleccionarOtro()">Otro</div>
+              <input id="input-otro" class="oculto" type="number" placeholder="Ingresa número" oninput="actualizarNumero(this.value)">
+            </div>
+          </div>
+
+          <div class="registrar-comanda-mesa">
+            <span id="mesa-seleccionada"><strong>Mesa 1</strong></span>
+            <button class="boton-editar-mesa" onclick="toggleSelectorMesas()">
+              <i class="fa-solid fa-pen-to-square"></i>
+            </button>
+          
+            <div id="selector-mesas" class="selector-mesas oculto">
+              {% for i in "12345678910"|make_list %}
+              <div onclick="seleccionarMesa('Mesa 0{{ i }}')">Mesa 0{{ i }}</div>
+              {% endfor %}
+            </div>
+          </div>
+
+        </div>
+
+        <div class="registrar-comanda-derecha-medio">
+          <!-- Aquí puedes agregar más cosas después -->
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <script src="{% static 'js/garzon.js' %}"></script>
+</body>
+</html>

@@ -1,0 +1,293 @@
+body {
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #f2f2f2;
+}
+
+header {
+  background-color: #6246ea;
+  color: white;
+  padding: 1rem;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+.contenedor-links{
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  justify-content: center;
+  column-gap: 50px;
+}
+.link{
+  font-size: 16px !important;
+}
+
+/* MESAS */
+
+.contenedor-mesas {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 20px;
+  padding: 2rem;
+  max-width: 900px;
+  margin: auto;
+}
+
+.mesa {
+  background-color: white;
+  border-radius: 12px;
+  padding: 30px 0;
+  text-align: center;
+  font-weight: bold;
+  font-size: 16px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.mesa:hover {
+  transform: translateY(-3px);
+}
+
+/* CARTA Y PEDIDO */
+
+#vista-carta{
+  flex-direction: row;
+  width: 100%;
+  min-height: 100vh;
+}
+
+.registrar-comanda-izquierda {
+  display: flex;
+  flex-direction: column;
+  width: 55%;
+  min-width: 300px;
+}
+
+.registrar-comanda-izquierda-arriba{
+  display: flex;
+  flex-direction: row;
+  background-color: #6246ea;
+  padding: 10px;
+  color: white;
+  font-size: 18px;
+  font-weight: bolder;
+}
+
+.registrar-comanda-izquierda-arriba button{
+  background-color: #6246ea;
+  border: none;
+}
+
+.registrar-comanda-izquierda-arriba button img{
+  width: 20px;
+  height: 20px;
+}
+
+.registrar-comanda-izquierda-abajo{
+  background-color: #6246ea;
+  padding: 10px;
+}
+
+.tabs-categorias {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 1rem;
+}
+
+.tabs-categorias button {
+  background: transparent;
+  border: none;
+  padding: 8px 14px;
+  border-bottom: 3px solid transparent;
+  cursor: pointer;
+  font-weight: 600;
+  color: white;
+  transition: 0.2s;
+}
+
+.tabs-categorias .tab-activa,
+.tabs-categorias button:hover {
+  border-color: #2f2462;
+  color: #2f2462;
+}
+
+.productos {
+  margin: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 20px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.producto {
+  background: white;
+  padding: 12px;
+  text-align: center;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.producto img {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+}
+
+.producto p {
+  margin-top: 10px;
+  font-size: 15px;
+  color: #222;
+}
+
+.producto strong {
+  display: block;
+  margin-top: 5px;
+  color: #e74c3c;
+}
+
+.registrar-comanda-centro{
+    width: 5px;
+    background-color: #999;
+    cursor: col-resize;
+    position: relative;
+    z-index: 10;
+}
+
+/* NUMERO DE CLIENTES CREAR COMANDA */
+
+.registrar-comanda-derecha {
+  width: 45%;
+  min-width: 300px;
+}
+
+.registrar-comanda-derecha-arriba{
+  background-color: #2f2462;
+  display: flex;
+  flex-direction: row;
+  padding: 10px;
+  column-gap: 40px;
+  justify-content: space-around;
+}
+
+.registrar-comanda-garzon h1{
+  color: white;
+  font-size: 16px;
+}
+
+.registrar-comanda-numero-clientes {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: white;
+  position: relative;
+}
+
+.boton-dropdown {
+  background-color: #6246ea;
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: white;
+  font-size: 16px;
+}
+
+.dropdown {
+  position: absolute;
+  top: 45px;
+  left: 0;
+  background-color: white;
+  color: #333;
+  border-radius: 8px;
+  padding: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  z-index: 100;
+  width: 130px;
+}
+
+.dropdown div {
+  padding: 6px;
+  cursor: pointer;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dropdown div:hover {
+  background-color: #eee;
+}
+
+.dropdown input {
+  padding: 6px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* EDITAR MESAS */
+
+.registrar-comanda-mesa {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: white;
+  position: relative;
+}
+
+.boton-editar-mesa {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.selector-mesas {
+  position: absolute;
+  top: 40px;
+  left: 0;
+  background: white;
+  color: black;
+  padding: 8px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 120px;
+}
+
+.selector-mesas div {
+  padding: 6px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.selector-mesas div:hover {
+  background-color: #eee;
+}
+
+.oculto {
+  display: none;
+}
+
+
+/* OCULTO */
+
+.oculto {
+  display: none;
+}
