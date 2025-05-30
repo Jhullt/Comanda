@@ -33,8 +33,7 @@ def registrar_pedido(request):
         try:
             data = json.loads(request.body)
             mesa = data.get('mesa')
-
-            # 🔢 Calcular el número de pedido para esta mesa
+            
             numero_pedido = Pedido.objects.filter(mesa=mesa).count() + 1
 
             pedido = Pedido.objects.create(
