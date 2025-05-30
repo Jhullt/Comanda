@@ -136,3 +136,30 @@ function mostrarModal(productoId) {
   const modal = new bootstrap.Modal(document.getElementById(`modalProducto${productoId}`));
   modal.show();
 }
+
+// PRECIO + ACOMPAÑAMIENTOS MODAL
+
+document.addEventListener('DOMContentLoaded', () => {
+  const botonesAgregar = document.querySelectorAll('#agregar-modal');
+
+  botonesAgregar.forEach(boton => {
+    const modal = boton.closest('.modal');
+    const productoId = modal.id.replace('modalProducto', '');
+    const checkboxExtras = modal.querySelectorAll('.acompanamiento-extra');
+    const precioBase = parseInt(boton.getAttribute('data-precio-base'), 10);
+
+    function actualizarPrecio() {
+      let total = precioBase;
+      checkboxExtras.forEach(cb => {
+        if (cb.checked) {
+          total += parseInt(cb.dataset.precio, 10);
+        }
+      });
+      boton.innerText = `Agregar $${total.toLocaleString('es-CL')}`;
+    }
+
+    checkboxExtras.forEach(cb => {
+      cb.addEventListener('change', actualizarPrecio);
+    });
+  });
+});

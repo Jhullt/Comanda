@@ -25,16 +25,19 @@
   <!-- Vista de mesas -->
   <section id="vista-mesas">
     <div class="contenedor-mesas">
-      {% for i in "12345678910"|make_list %}
-        <div class="mesa" onclick="abrirCarta('Mesa 0{{ i }}')">Mesa 0{{ i }}</div>
-      {% endfor %}
+      {% with total_mesas=10 %}
+        {% for i in total_mesas|get_range %}
+          <div class="mesa" onclick="abrirCarta('Mesa {{ i|stringformat:"02d" }}')">
+            Mesa {{ i|stringformat:"02d" }}
+          </div>
+        {% endfor %}
+      {% endwith %}
     </div>
   </section>
 
   <!-- Vista crear comanda -->
   <section id="vista-carta" class="oculto">
     <div class="registrar-comanda-izquierda">
-
       <div class="registrar-comanda-izquierda-arriba">
         <button onclick="volver()">
           <img src="{% static 'icons/volver-white.png' %}" alt="">
@@ -61,7 +64,6 @@
               <p>{{ producto.nombre }}<br><strong>{{ producto.precio_humanizado }}</strong></p>
             </div>
           {% endfor %}
-
           {% for bebestible in bebestibles %}
             <div class="producto" data-categoria="Bebestibles">
               <img src="{% static bebestible.imagen %}" alt="{{ bebestible.nombre }}" />
@@ -79,7 +81,6 @@
         <div class="registrar-comanda-garzon">
           <h1>Garzón Franco</h1>
         </div>
-
         <div class="registrar-comanda-numero-clientes">
           <i class="fa-solid fa-user" style="color: white;"></i>
           <span id="numero-seleccionado">1</span>
@@ -101,10 +102,10 @@
             <i class="fa-solid fa-pen-to-square"></i>
           </button>
           <div id="selector-mesas" class="selector-mesas oculto">
-            {% for i in "12345678910"|make_list %}
-              <div onclick="seleccionarMesa('Mesa 0{{ i }}')">Mesa 0{{ i }}</div>
+            {% for i in 10|get_range %}
+              <div onclick="seleccionarMesa('Mesa {{ i|stringformat:"02d" }}')">Mesa {{ i|stringformat:"02d" }}</div>
             {% endfor %}
-          </div>
+          </div>          
         </div>
       </div>
 
@@ -113,7 +114,6 @@
           <h1>Pedido 1</h1>
         </div>
         <div class="registrar-comanda-derecha-medio-pedido-contenedor">
-          <!-- Productos agregados al pedido aparecerán aquí -->
         </div>
       </div>
 
@@ -135,16 +135,10 @@
       <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
           <div class="contenedor-modal-personalizado">
-
-            <div class="contenedor-modal-inicio">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">X</button>
-            </div>
-
             <div class="contenedor-modal-divisor">
               <div class="contenedor-modal-izquierda">
                 <img src="{% static producto.imagen %}" alt="{{ producto.nombre }}">
               </div>
-
               <div class="contenedor-modal-derecha">
                 <div class="contenedor-modal-items-centrados">
                   <h1>{{ producto.nombre }}</h1>
@@ -152,40 +146,71 @@
                   <h2>{{ producto.precio_humanizado }}</h2>
                 </div>
 
-                <div class="contenedor-aderezos-modal mb-3">
-                  <label class="form-label">Ingredientes (puedes quitar)</label>
-                  {% for ingrediente in producto.ingredientes.all %}
-                  <div class="form-check">
-                    <input class="form-check-input" type="checkbox" checked id="ingrediente{{ producto.id }}-{{ ingrediente.id }}">
-                    <label class="form-check-label" for="ingrediente{{ producto.id }}-{{ ingrediente.id }}">
-                      {{ ingrediente.nombre }}
-                    </label>
+                <div class="contenedor-modal-bajar">
+                  <!-- Acompañamientos-->
+                  <div class="contenedor-acompanamientos-extra-modal mb-3">
+                    <div class="contenedor-acompanamientos-titulo">
+                      <h1>Acompañamientos</h1>
+                      <h2>(Máx 1)</h2>
+                    </div>
+                    {% for a in acompanamientos %}
+                      {% if a.precio > 0 %}
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio"
+                              name="acompanamiento-extra-{{ producto.id }}"
+                              id="acompanamientoExtra{{ producto.id }}-{{ a.id }}"
+                              value="{{ a.id }}">
+                        <label class="form-check-label" for="acompanamientoExtra{{ producto.id }}-{{ a.id }}">
+                          {{ a.nombre }}
+                        </label>
+                      </div>
+                      {% endif %}
+                    {% endfor %}
                   </div>
-                  {% endfor %}
-                </div>
 
-                <div class="contenedor-ingredientes-extra mb-3">
-                  <label class="form-label">Acompañamientos (el primero gratis)</label>
-                  {% for acompanamiento in acompanamientos %}
-                  <div class="form-check">
-                    <input class="form-check-input acompanamiento-extra" type="checkbox" name="acompanamientos" value="{{ acompanamiento.id }}" data-precio="{{ acompanamiento.precio }}" id="acompanamiento{{ producto.id }}-{{ acompanamiento.id }}">
-                    <label class="form-check-label" for="acompanamiento{{ producto.id }}-{{ acompanamiento.id }}">
-                      {{ acompanamiento.nombre }} {% if acompanamiento.precio > 0 %}(+${{ acompanamiento.precio }}){% endif %}
-                    </label>
+                  <!-- Acompañamientos extra -->
+                  <div class="contenedor-acompanamientos-extra-modal mb-3">
+                    <div class="contenedor-acompanamientos-titulo">
+                      <h1>Acompañamientos extra</h1>
+                    </div>
+                    {% for a in acompanamientos %}
+                      {% if a.precio > 0 %}
+                      <div class="form-check">
+                        <input class="form-check-input acompanamiento-extra" type="checkbox"
+                               name="acompanamientos-extra"
+                               id="acompanamientoExtra{{ producto.id }}-{{ a.id }}"
+                               value="{{ a.id }}" data-precio="{{ a.precio }}">
+                        <div class="form-check-modal">
+                          <label class="form-check-label" for="acompanamientoExtra{{ producto.id }}-{{ a.id }}">
+                            {{ a.nombre }}
+                          </label>
+                          <label id="precio-form-modal" for="acompanamientoExtra"> (+${{ a.precio }})</label>
+                        </div>
+                      </div>
+                      {% endif %}
+                    {% endfor %}
                   </div>
-                  {% endfor %}
+
+                  <!-- Ingredientes -->
+                  <div class="contenedor-ingredientes-modal mb-3">
+                    <label class="form-label">Ingredientes</label>
+                    {% for ingrediente in producto.ingredientes.all %}
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" checked id="ingrediente{{ producto.id }}-{{ ingrediente.id }}">
+                      <label class="form-check-label" for="ingrediente{{ producto.id }}-{{ ingrediente.id }}">
+                        {{ ingrediente.nombre }}
+                      </label>
+                    </div>
+                    {% endfor %}
+                  </div>
                 </div>
               </div>
             </div>
 
             <div class="modal-footer px-0">
-              <div class="contenedor-modal-agregar-mas-productos">
-                <button class="btn-restar" data-id="{{ producto.id }}"><</button>
-                <h1 id="cantidad-{{ producto.id }}">1</h1>
-                <button class="btn-sumar" data-id="{{ producto.id }}">></button>
-              </div>
-              <button type="button" class="btn btn-primary" id="btn-agregar-{{ producto.id }}" data-precio-base="{{ producto.precio }}">
-                AGREGAR {{ producto.precio_humanizado }}
+              <button type="button" id="cancelar-modal" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+              <button type="button" id="agregar-modal" class="btn btn-primary" data-precio-base="{{ producto.precio }}">
+                Agregar {{ producto.precio_humanizado }}
               </button>
             </div>
 
