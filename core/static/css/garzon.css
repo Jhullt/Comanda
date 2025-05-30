@@ -80,6 +80,7 @@ header {
 .registrar-comanda-izquierda-arriba button{
   background-color: #6246ea;
   border: none;
+  cursor: pointer;
 }
 
 .registrar-comanda-izquierda-arriba button img{
@@ -123,7 +124,10 @@ header {
   gap: 20px;
   max-height: 400px;
   overflow-y: auto;
+  padding-right: 5px;
+  padding-bottom: 20px;
 }
+
 
 .producto {
   background: white;
@@ -164,6 +168,10 @@ header {
 .registrar-comanda-derecha {
   width: 45%;
   min-width: 300px;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  justify-content: space-between;
 }
 
 .registrar-comanda-derecha-arriba{
@@ -290,4 +298,174 @@ header {
 
 .oculto {
   display: none;
+}
+
+/* CARTA */
+
+.registrar-comanda-derecha-medio{
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  padding: 12px;
+  overflow: hidden;
+}
+
+.registrar-comanda-derecha-medio-n-pedido{
+  background-color: #2f2462;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.registrar-comanda-derecha-medio-n-pedido h1{
+  font-size: 16px;
+  font-weight: bolder;
+  color: white;
+}
+
+.registrar-comanda-derecha-medio-pedido-contenedor {
+  flex-grow: 1;
+  overflow-y: scroll;
+  padding-right: 5px;
+}
+
+.registrar-comanda-derecha-medio-pedido-contenedor::-webkit-scrollbar-thumb {
+  background-color: #2f2462;
+}
+
+
+.registrar-comanda-carta-pedido{
+  width: 90%;
+  padding: 10px;
+  background-color: white;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+
+.registrar-comanda-carta-pedido-arriba{
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.registrar-comanda-carta-pedido-arriba h1{
+  font-size: 18px;
+  color: #2b2c34;
+  font-weight: bolder;
+  margin: 0px;
+}
+
+.registrar-comanda-carta-pedido-arriba button{
+  border: none;
+  font-size: 20px;
+  background-color: white;
+  cursor: pointer;
+}
+
+.registrar-comanda-carta-pedido-abajo h1{
+  font-size: 16px;
+  color: #2b2c34;
+  font-weight: bolder;
+  margin-top: 5px;
+  margin-bottom: 10px;
+}
+
+.registrar-comanda-carta-pedido-abajo h2{
+  font-size: 16px;
+  color: #2b2c34;
+  font-weight: normal;
+  margin-top: 5px;
+  margin-bottom: 10px;
+
+}
+
+.registrar-comanda-derecha-precio{
+  background-color: #2f2462;
+  display: flex;
+  justify-content: space-between;
+  padding: 12px;
+}
+
+.registrar-comanda-derecha-precio h1{
+  color: white;
+  font-size: 16px;
+  font-weight: bolder;
+  margin: 0px;
+}
+
+#cancelar-comanda{
+  background-color: #e45858;
+  color: white;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+  width: 150px;
+  height: 50px;
+  border-radius: 10px;
+  font-weight: bolder;
+}
+.registrar-comanda-derecha-buttons{
+  margin-bottom: 20px;
+  margin-top: 20px;
+  padding: 12px;
+  display: flex;
+  justify-content: center;
+  column-gap: 3px;
+}
+
+#cancelar-comanda:hover {
+  background-color: #de3535;
+}
+
+#entregar-comanda{
+  background-color: #53c342;
+  color: white;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+  width: 150px;
+  height: 50px;
+  border-radius: 10px;
+  font-weight: bolder;
+}
+
+#entregar-comanda:hover {
+  background-color: #37b524;
+}
+
+#enviar-comanda{
+  background-color: #6246ea;
+  color: white;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+  width: 150px;
+  height: 50px;
+  border-radius: 10px;
+  font-weight: bolder;
+}
+
+#enviar-comanda:hover {
+  background-color: #2f2462;
+}
+
+/* MODAL */
+
+.contenedor-modal-derecha {
+  max-height: 400px;
+  overflow-y: auto;
+  padding-right: 10px;
+}
+
+
+.contenedor-modal-derecha::-webkit-scrollbar-thumb {
+  background-color: #2f2462;
+  border-radius: 4px;
+}
+
+.contenedor-modal-derecha::-webkit-scrollbar {
+  width: 6px;
 }

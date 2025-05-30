@@ -1,7 +1,15 @@
 from django.db import models
 from django.utils.html import format_html
+from django.templatetags.static import static
 
-# INGREDIENTES (con stock)
+# CATEGORÍA DE PRODUCTOS
+class Categoria(models.Model):
+    nombre = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.nombre
+
+# INGREDIENTES
 class Ingrediente(models.Model):
     nombre = models.CharField(max_length=100)
     stock = models.PositiveIntegerField(default=0)
@@ -9,29 +17,24 @@ class Ingrediente(models.Model):
     def __str__(self):
         return self.nombre
 
-# ACOMPAÑAMIENTO (sin precio, pero con stock)
+# ACOMPAÑAMIENTO
 class Acompanamiento(models.Model):
     nombre = models.CharField(max_length=100)
     stock = models.PositiveIntegerField(default=0)
+    precio = models.PositiveIntegerField(default=0)
 
     def __str__(self):
+        if self.precio > 0:
+            return f"{self.nombre} (+${self.precio:,})"
         return self.nombre
 
-# ACOMPAÑAMIENTO EXTRA (con precio y stock)
-class AcompanamientoExtra(models.Model):
-    nombre = models.CharField(max_length=100)
-    precio = models.PositiveIntegerField()
-    stock = models.PositiveIntegerField(default=0)
-
-    def __str__(self):
-        return f"{self.nombre} (+${self.precio:,})"
-
-# PRODUCTO (sin campos de acompañamientos)
+# PRODUCTO
 class Producto(models.Model):
     nombre = models.CharField(max_length=100)
     ingredientes = models.ManyToManyField(Ingrediente, blank=True)
-    imagen = models.ImageField(upload_to='productos/')
+    imagen = models.CharField(max_length=200, blank=True)
     precio = models.PositiveIntegerField()
+    categoria = models.ForeignKey(Categoria, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         return self.nombre
@@ -41,5 +44,25 @@ class Producto(models.Model):
 
     def mostrar_imagen(self):
         if self.imagen:
-            return format_html('<img src="{}" width="50" height="50" style="object-fit: cover;" />', self.imagen.url)
+            ruta = static(self.imagen)
+            return format_html('<img src="{}" width="50" height="50" style="object-fit: cover;" />', ruta)
+        return "Sin imagen"
+
+# BEBESTIBLE
+class Bebestible(models.Model):
+    nombre = models.CharField(max_length=100)
+    imagen = models.CharField(max_length=200, blank=True)
+    precio = models.PositiveIntegerField()
+    stock = models.PositiveIntegerField(default=0)
+
+    def __str__(self):
+        return self.nombre
+
+    def precio_humanizado(self):
+        return f"${self.precio:,}".replace(",", ".")
+
+    def mostrar_imagen(self):
+        if self.imagen:
+            ruta = static(self.imagen)
+            return format_html('<img src="{}" width="50" height="50" style="object-fit: cover;" />', ruta)
         return "Sin imagen"
