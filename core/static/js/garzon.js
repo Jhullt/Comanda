@@ -163,3 +163,194 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 });
+
+// AGREGAR CARRITO Y SUMAR PRECIOS
+
+function formatearPrecio(valor) {
+  return `$${valor.toLocaleString('es-CL')}`;
+}
+
+function obtenerTextoSeleccionado(selector) {
+  return Array.from(document.querySelectorAll(selector))
+    .filter(e => e.checked)
+    .map(e => e.nextElementSibling.innerText)
+    .join(', ');
+}
+
+function obtenerPrecioExtras(selector) {
+  return Array.from(document.querySelectorAll(selector))
+    .filter(e => e.checked)
+    .reduce((acc, e) => acc + parseInt(e.dataset.precio || 0), 0);
+}
+
+function calcularTotal() {
+  let total = 0;
+  document.querySelectorAll('[data-precio-final]').forEach(item => {
+    total += parseInt(item.dataset.precioFinal);
+  });
+  document.getElementById('total-precio').innerText = formatearPrecio(total);
+}
+
+document.querySelectorAll('#agregar-modal').forEach(boton => {
+  boton.addEventListener('click', () => {
+    const modal = boton.closest('.modal');
+    const productoId = modal.id.replace('modalProducto', '');
+    const nombreProducto = modal.querySelector('.contenedor-modal-items-centrados h1').innerText;
+    const precioBase = parseInt(boton.getAttribute('data-precio-base'));
+    const extrasSeleccionados = obtenerTextoSeleccionado(`#${modal.id} .acompanamiento-extra`);
+    const ingredientesSeleccionados = obtenerTextoSeleccionado(`#${modal.id} .contenedor-ingredientes-modal input[type="checkbox"]`);
+    const acompañamientoRadio = modal.querySelector(`input[name="acompanamiento-extra-${productoId}"]:checked`);
+    const acompañamientoSimple = acompañamientoRadio ? acompañamientoRadio.nextElementSibling.innerText : '';
+
+    const precioExtras = obtenerPrecioExtras(`#${modal.id} .acompanamiento-extra`);
+    const precioFinal = precioBase + precioExtras;
+
+    const contenedor = document.getElementById('carrito');
+    const nuevoProducto = document.createElement('div');
+    nuevoProducto.classList.add('registrar-comanda-carrito');
+    nuevoProducto.setAttribute('data-precio-final', precioFinal);
+
+    nuevoProducto.innerHTML = `
+      <div class="registrar-comanda-carrito-arriba">
+        <h1>${nombreProducto}</h1>
+        <button onclick="this.closest('.registrar-comanda-carrito').remove(); calcularTotal();">
+          <i class="fa-solid fa-trash"></i>
+        </button>
+      </div>
+      <div class="registrar-comanda-carrito-abajo">
+        <h1>Acompañamientos</h1>
+        <p>${acompañamientoSimple}${extrasSeleccionados ? ', ' + extrasSeleccionados : ''}</p>
+        <h1>Ingredientes</h1>
+        <p>${ingredientesSeleccionados}</p>
+        <h1>Precio</h1>
+        <p>${formatearPrecio(precioFinal)}</p>
+      </div>
+    `;
+
+    contenedor.appendChild(nuevoProducto);
+    calcularTotal();
+
+    const instanciaModal = bootstrap.Modal.getInstance(modal);
+    instanciaModal.hide();
+  });
+});
+
+// PEDIDO
+
+let contadorPedidos = 1;
+
+document.getElementById("enviar-comanda").addEventListener("click", () => {
+  const mesa = document.getElementById("mesa-seleccionada").innerText;
+  const comensales = document.getElementById("numero-seleccionado").innerText;
+  const garzon = "Franco"; // Nombre temporal
+
+  const productos = Array.from(document.querySelectorAll(".registrar-comanda-carrito")).map((producto) => {
+    return producto.innerText.trim();
+  });
+
+  const total = document.getElementById("total-precio").innerText.replace(/\D/g, "");
+
+  const datos = {
+    mesa,
+    comensales: parseInt(comensales),
+    garzon,
+    detalle: productos.join("\n\n"),
+    total: parseInt(total),
+  };
+
+  fetch("/registrar-pedido/", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-CSRFToken": getCSRFToken(),
+    },
+    body: JSON.stringify(datos),
+  })
+    .then(response => response.json())
+    .then(data => {
+      if (data.ok) {
+        const pedidoId = data.numero_pedido;
+        crearTarjetaPedido(datos, pedidoId);
+        alert("Pedido enviado correctamente");
+      } else {
+        console.error("Respuesta con error:", data);
+        alert("Error al registrar el pedido: " + (data.error || "Error desconocido"));
+      }
+    })
+    .catch(() => alert("Error de conexión con el servidor"));
+});
+
+function crearTarjetaPedido(datos, pedidoId) {
+  const tarjeta = document.createElement("div");
+  tarjeta.className = "tarjeta-pedido";
+  tarjeta.setAttribute("data-pedido", pedidoId);
+  tarjeta.setAttribute("data-tiempo", Date.now());
+
+  tarjeta.innerHTML = `
+    <div class="tarjeta-header estado-preparacion">
+      <span>${horaActual()}</span>
+      <span><i class="fa-solid fa-user"></i> ${datos.comensales}</span>
+      <span id="tiempo-${pedidoId}">0m</span>
+    </div>
+    <div class="tarjeta-body">
+      <h3 class="mesa-nombre">${datos.mesa}</h3>
+      <p>Pedido ${pedidoId}</p>
+    </div>
+  `;
+
+  const idMesa = datos.mesa.toLowerCase().replace(" ", "-");
+  const divMesa = document.getElementById(idMesa);
+  if (divMesa) {
+    divMesa.innerHTML = tarjeta.innerHTML;
+    divMesa.className = "mesa tarjeta-pedido";
+    divMesa.setAttribute("data-pedido", pedidoId);
+    divMesa.setAttribute("data-tiempo", Date.now());
+  }
+
+  actualizarTiempo(pedidoId);
+}
+
+
+
+function marcarEntregado(pedidoId, boton) {
+  fetch("/registrar-pedido/", {
+    method: "POST",
+    headers: {
+      "X-CSRFToken": getCSRFToken(),
+    },
+  }).then(response => {
+    if (response.ok) {
+      const tarjeta = document.querySelector(`[data-pedido='${pedidoId}']`);
+      tarjeta.querySelector(".tarjeta-header").classList.remove("naranja");
+      tarjeta.querySelector(".tarjeta-header").classList.add("verde");
+      tarjeta.querySelector(".tarjeta-header").children[1].innerText = "Entregado";
+      boton.remove();
+    }
+  });
+}
+
+function actualizarTiempo(pedidoId) {
+  const tiempoEl = document.getElementById(`tiempo-${pedidoId}`);
+  const inicio = parseInt(document.querySelector(`[data-pedido='${pedidoId}']`).getAttribute("data-tiempo"));
+
+  setInterval(() => {
+    const diff = Date.now() - inicio;
+    const minutos = Math.floor(diff / 60000);
+    const horas = Math.floor(minutos / 60);
+    const texto = horas > 0 ? `${horas}h ${minutos % 60}m` : `${minutos}m`;
+    tiempoEl.innerText = texto;
+  }, 60000);
+}
+
+function horaActual() {
+  const ahora = new Date();
+  return ahora.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+}
+
+function getCSRFToken() {
+  const cookie = document.cookie.split(";").find(c => c.trim().startsWith("csrftoken="));
+  return cookie ? cookie.split("=")[1] : "";
+}
+
+
+

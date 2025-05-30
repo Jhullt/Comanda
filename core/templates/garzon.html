@@ -27,13 +27,34 @@
     <div class="contenedor-mesas">
       {% with total_mesas=10 %}
         {% for i in total_mesas|get_range %}
-          <div class="mesa" onclick="abrirCarta('Mesa {{ i|stringformat:"02d" }}')">
-            Mesa {{ i|stringformat:"02d" }}
-          </div>
+          {% with mesa_num="Mesa "|concat:i|stringformat:"02d" %}
+            {% with pedido=pedidos|get_mesa:mesa_num %}
+              {% if pedido %}
+                <div class="mesa activa" id="mesa-{{ i|stringformat:'02d' }}">
+                  <div class="mesa-header">
+                    <span>{{ pedido.hora_creacion|time:"H:i" }}</span>
+                    <span><i class="fa-solid fa-user"></i> {{ pedido.comensales }}</span>
+                    <span>{{ pedido.tiempo_entrega|default:"0m" }}</span>
+                  </div>
+                  <div class="mesa-body">
+                    <h3 class="mesa-en-proceso">{{ pedido.mesa }}</h3>
+                    <p>Pedido {{ pedido.numero_pedido }}</p>
+                  </div>
+                </div>
+              {% else %}
+                <div class="mesa" id="mesa-{{ i|stringformat:"02d" }}" onclick="abrirCarta('Mesa {{ i|stringformat:"02d" }}')">
+                  Mesa {{ i|stringformat:"02d" }}
+                </div>
+              {% endif %}
+            {% endwith %}
+          {% endwith %}
         {% endfor %}
       {% endwith %}
     </div>
   </section>
+  
+  
+  
 
   <!-- Vista crear comanda -->
   <section id="vista-carta" class="oculto">
@@ -113,13 +134,12 @@
         <div class="registrar-comanda-derecha-medio-n-pedido">
           <h1>Pedido 1</h1>
         </div>
-        <div class="registrar-comanda-derecha-medio-pedido-contenedor">
-        </div>
+        <div class="registrar-comanda-derecha-medio-pedido-contenedor" id="carrito"></div>
       </div>
 
       <div class="registrar-comanda-derecha-precio">
         <h1>Total:</h1>
-        <h1>$0</h1>
+        <h1 id="total-precio">$0</h1>
       </div>
 
       <div class="registrar-comanda-derecha-buttons">

@@ -627,3 +627,92 @@ input[type="radio"]:checked {
   background-color: #6246ea;
   border-color: #6246ea;
 }
+
+/* AGREGAR CARRITO */
+
+.registrar-comanda-carrito{
+  background-color: white;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+.registrar-comanda-carrito-arriba{
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.registrar-comanda-carrito-arriba h1{
+  font-size: 20px;
+  font-weight: bolder;
+}
+
+.registrar-comanda-carrito-arriba button{
+  background-color: white;
+  color: #6246ea;
+  border: none;
+  font-size: 20px;
+}
+
+.registrar-comanda-carrito-arriba button:hover{
+  color: #2f2462;
+}
+
+.registrar-comanda-carrito-abajo h1{
+  font-size: 18px;
+  font-weight: bolder;
+}
+
+.registrar-comanda-carrito-abajo p{
+  font-size: 16px;
+}
+
+/* PROBANDO CAMBIO DEL ESTADO DEL PEDIDO EN LAS MESAS */
+
+.tarjeta-pedido {
+  width: 160px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 3px 3px 5px rgba(0,0,0,0.2);
+  overflow: hidden;
+  margin: 10px;
+  font-family: 'Poppins', sans-serif;
+  text-align: center;
+}
+
+.tarjeta-header {
+  padding: 8px;
+  color: white;
+  font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+}
+
+.estado-preparacion {
+  background-color: #e58e26; /* naranja */
+}
+
+.estado-entregado {
+  background-color: #53c342; /* verde */
+}
+
+.tarjeta-body {
+  padding: 12px 8px;
+}
+
+.tarjeta-body h3 {
+  margin: 4px 0;
+  font-size: 16px;
+  color: #e58e26;
+}
+
+.tarjeta-body p {
+  font-size: 14px;
+  margin: 4px 0;
+}

@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.html import format_html
 from django.templatetags.static import static
+from django.utils import timezone
 
 # CATEGORÍA DE PRODUCTOS
 class Categoria(models.Model):
@@ -66,3 +67,25 @@ class Bebestible(models.Model):
             ruta = static(self.imagen)
             return format_html('<img src="{}" width="50" height="50" style="object-fit: cover;" />', ruta)
         return "Sin imagen"
+    
+# PEDIDO
+
+class Pedido(models.Model):
+    numero_pedido = models.PositiveIntegerField()
+    mesa = models.CharField(max_length=20)
+    garzon = models.CharField(max_length=100)
+    comensales = models.PositiveIntegerField(default=1)
+    detalle = models.TextField()
+    total = models.PositiveIntegerField(default=0)
+    hora_creacion = models.DateTimeField(default=timezone.now)
+    hora_entrega = models.DateTimeField(null=True, blank=True)
+
+    @property
+    def tiempo_entrega(self):
+        if self.hora_entrega:
+            return self.hora_entrega - self.hora_creacion
+        return None
+
+    def __str__(self):
+        return f"Pedido {self.numero_pedido} - {self.mesa}"
+    

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Producto, Ingrediente, Acompanamiento, Categoria, Bebestible
+from .models import Producto, Ingrediente, Acompanamiento, Categoria, Bebestible, Pedido
 
 @admin.register(Producto)
 class ProductoAdmin(admin.ModelAdmin):
@@ -21,3 +21,10 @@ class CategoriaAdmin(admin.ModelAdmin):
 @admin.register(Bebestible)
 class BebestibleAdmin(admin.ModelAdmin):
     list_display = ('nombre', 'precio_humanizado', 'stock', 'mostrar_imagen')
+
+@admin.register(Pedido)
+class PedidoAdmin(admin.ModelAdmin):
+    list_display = ('numero_pedido', 'mesa', 'garzon', 'comensales', 'total', 'hora_creacion', 'hora_entrega')
+    readonly_fields = ('hora_creacion', 'hora_entrega', 'tiempo_entrega')
+    search_fields = ('mesa', 'garzon')
+    list_filter = ('hora_creacion', 'hora_entrega')
