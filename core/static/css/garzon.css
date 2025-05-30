@@ -34,6 +34,7 @@ header {
   padding: 2rem;
   max-width: 900px;
   margin: auto;
+  align-items: center;
 }
 
 .mesa {
@@ -51,6 +52,55 @@ header {
 .mesa:hover {
   transform: translateY(-3px);
 }
+
+
+/* PROBANDO CAMBIO DEL ESTADO DEL PEDIDO EN LAS MESAS */
+
+.tarjeta-pedido {
+  height: 200px;
+  width: 160px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 3px 3px 5px rgba(0,0,0,0.2);
+  overflow: hidden;
+  margin: 10px;
+  font-family: 'Poppins', sans-serif;
+  text-align: center;
+}
+
+.tarjeta-header {
+  padding: 8px;
+  color: white;
+  font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+}
+
+.estado-preparacion {
+  background-color: #e58e26; /* naranja */
+}
+
+.estado-entregado {
+  background-color: #53c342; /* verde */
+}
+
+.tarjeta-body {
+
+}
+
+.tarjeta-body h3 {
+  margin: 4px 0;
+  font-size: 16px;
+  color: #e58e26;
+}
+
+.tarjeta-body p {
+  font-size: 14px;
+  margin: 4px 0;
+}
+
 
 /* CARTA Y PEDIDO */
 
@@ -671,48 +721,3 @@ input[type="radio"]:checked {
   font-size: 16px;
 }
 
-/* PROBANDO CAMBIO DEL ESTADO DEL PEDIDO EN LAS MESAS */
-
-.tarjeta-pedido {
-  width: 160px;
-  background: white;
-  border-radius: 10px;
-  box-shadow: 3px 3px 5px rgba(0,0,0,0.2);
-  overflow: hidden;
-  margin: 10px;
-  font-family: 'Poppins', sans-serif;
-  text-align: center;
-}
-
-.tarjeta-header {
-  padding: 8px;
-  color: white;
-  font-weight: bold;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 12px;
-}
-
-.estado-preparacion {
-  background-color: #e58e26; /* naranja */
-}
-
-.estado-entregado {
-  background-color: #53c342; /* verde */
-}
-
-.tarjeta-body {
-  padding: 12px 8px;
-}
-
-.tarjeta-body h3 {
-  margin: 4px 0;
-  font-size: 16px;
-  color: #e58e26;
-}
-
-.tarjeta-body p {
-  font-size: 14px;
-  margin: 4px 0;
-}

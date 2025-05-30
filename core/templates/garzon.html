@@ -22,19 +22,20 @@
 </header>
 
 <main>
-  <!-- Vista de mesas -->
-  <section id="vista-mesas">
-    <div class="contenedor-mesas">
-      {% with total_mesas=10 %}
-        {% for i in total_mesas|get_range %}
-          {% with mesa_num="Mesa "|concat:i|stringformat:"02d" %}
-            {% with pedido=pedidos|get_mesa:mesa_num %}
+<!-- Vista de mesas -->
+<section id="vista-mesas">
+  <div class="contenedor-mesas">
+    {% with total_mesas=10 %}
+      {% for i in total_mesas|get_range %}
+        {% with numero=i|stringformat:"02d" %}
+          {% with mesa_id="Mesa "|concat:numero %}
+            {% with pedido=pedidos|get_mesa:mesa_id %}
               {% if pedido %}
-                <div class="mesa activa" id="mesa-{{ i|stringformat:'02d' }}">
+                <div class="mesa activa" id="mesa-{{ numero }}" onclick="abrirCarta('Mesa {{ numero }}')">
                   <div class="mesa-header">
                     <span>{{ pedido.hora_creacion|time:"H:i" }}</span>
                     <span><i class="fa-solid fa-user"></i> {{ pedido.comensales }}</span>
-                    <span>{{ pedido.tiempo_entrega|default:"0m" }}</span>
+                    <span id="tiempo-{{ pedido.numero_pedido }}">0m</span>
                   </div>
                   <div class="mesa-body">
                     <h3 class="mesa-en-proceso">{{ pedido.mesa }}</h3>
@@ -42,16 +43,18 @@
                   </div>
                 </div>
               {% else %}
-                <div class="mesa" id="mesa-{{ i|stringformat:"02d" }}" onclick="abrirCarta('Mesa {{ i|stringformat:"02d" }}')">
-                  Mesa {{ i|stringformat:"02d" }}
+                <div class="mesa" id="mesa-{{ numero }}" onclick="abrirCarta('Mesa {{ numero }}')">
+                  Mesa {{ numero }}
                 </div>
               {% endif %}
             {% endwith %}
           {% endwith %}
-        {% endfor %}
-      {% endwith %}
-    </div>
-  </section>
+        {% endwith %}
+      {% endfor %}
+    {% endwith %}
+  </div>
+</section>
+
   
   
   
