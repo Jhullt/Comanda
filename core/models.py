@@ -67,15 +67,13 @@ class Bebestible(models.Model):
             ruta = static(self.imagen)
             return format_html('<img src="{}" width="50" height="50" style="object-fit: cover;" />', ruta)
         return "Sin imagen"
-    
-# PEDIDO
 
+# PEDIDO
 class Pedido(models.Model):
     numero_pedido = models.PositiveIntegerField()
     mesa = models.CharField(max_length=20)
     garzon = models.CharField(max_length=100)
     comensales = models.PositiveIntegerField(default=1)
-    detalle = models.TextField()
     total = models.PositiveIntegerField(default=0)
     hora_creacion = models.DateTimeField(default=timezone.now)
     hora_entrega = models.DateTimeField(null=True, blank=True)
@@ -88,4 +86,14 @@ class Pedido(models.Model):
 
     def __str__(self):
         return f"Pedido {self.numero_pedido} - {self.mesa}"
-    
+
+# DETALLE DE PEDIDO
+class DetallePedido(models.Model):
+    pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE, related_name='detalles')
+    producto = models.CharField(max_length=100)
+    acompanamientos = models.TextField(blank=True)
+    ingredientes = models.TextField(blank=True)
+    precio = models.PositiveIntegerField()
+
+    def __str__(self):
+        return f"{self.producto} - ${self.precio:,}"

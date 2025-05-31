@@ -32,6 +32,7 @@ function seleccionarMesa(nombre) {
 }
 
 // OCULTAR REGISTRAR COMANDA
+
 function abrirCarta(nombreMesa) {
   document.getElementById('vista-mesas').classList.add('oculto');
   document.getElementById('vista-carta').classList.remove('oculto');
@@ -60,7 +61,74 @@ function abrirCarta(nombreMesa) {
     leftPanel.style.width = `${initialLeft}px`;
     rightPanel.style.width = `${initialRight}px`;
   }
+
+  fetch(`/obtener-pedido/?mesa=${encodeURIComponent(nombreMesa)}`)
+    .then(response => response.json())
+    .then(data => {
+      const contenedor = document.getElementById('carrito');
+      contenedor.innerHTML = "";
+
+      const btnEnviar = document.getElementById("enviar-comanda");
+
+      if (data.ok) {
+        document.getElementById("total-precio").innerText = `$${data.total.toLocaleString("es-CL")}`;
+        btnEnviar.disabled = true;
+        btnEnviar.innerText = "Pedido enviado";
+
+        const productos = data.detalle.split("\n\n");
+
+        productos.forEach(prod => {
+          const lineas = prod.split('\n').filter(l => l.trim() !== "");
+
+          const nombre = lineas[0] || "";
+          const acompIndex = lineas.indexOf("Acompañamientos");
+          const ingreIndex = lineas.indexOf("Ingredientes");
+          const precioIndex = lineas.indexOf("Precio");
+
+          const acomp = (acompIndex !== -1 && lineas[acompIndex + 1]) ? lineas[acompIndex + 1] : "";
+          const ingre = (ingreIndex !== -1 && lineas[ingreIndex + 1]) ? lineas[ingreIndex + 1] : "";
+          const precio = (precioIndex !== -1 && lineas[precioIndex + 1]) ? lineas[precioIndex + 1] : "";
+
+          const nuevoProducto = document.createElement('div');
+          nuevoProducto.classList.add('registrar-comanda-carrito');
+          nuevoProducto.innerHTML = `
+            <div class="registrar-comanda-carrito-arriba">
+              <h1>${nombre}</h1>
+            </div>
+            <div class="registrar-comanda-carrito-abajo">
+              <h1>Acompañamientos</h1>
+              <p>${acomp}</p>
+              <h1>Ingredientes</h1>
+              <p>${ingre}</p>
+              <h1>Precio</h1>
+              <p>${precio}</p>
+            </div>
+          `;
+          contenedor.appendChild(nuevoProducto);
+        });
+
+      } else {
+        document.getElementById("total-precio").innerText = "$0";
+        btnEnviar.disabled = false;
+        btnEnviar.innerText = "Enviar";
+      }
+    })
+    .catch(error => {
+      console.error("Error al obtener pedido:", error);
+      alert("Error al cargar datos del pedido");
+    });
 }
+
+
+
+
+
+
+
+
+
+
+
 
 function volver() {
   console.log("Volviendo a vista mesas");
@@ -329,18 +397,31 @@ function marcarEntregado(pedidoId, boton) {
   });
 }
 
+// TIEMPO QUE LLEVA EL PEDIDO
+
 function actualizarTiempo(pedidoId) {
   const tiempoEl = document.getElementById(`tiempo-${pedidoId}`);
   const inicio = parseInt(document.querySelector(`[data-pedido='${pedidoId}']`).getAttribute("data-tiempo"));
 
-  setInterval(() => {
-    const diff = Date.now() - inicio;
-    const minutos = Math.floor(diff / 60000);
-    const horas = Math.floor(minutos / 60);
-    const texto = horas > 0 ? `${horas}h ${minutos % 60}m` : `${minutos}m`;
-    tiempoEl.innerText = texto;
-  }, 60000);
+  function actualizar() {
+    const diff = Math.floor((Date.now() - inicio) / 1000);
+    const horas = Math.floor(diff / 3600);
+    const minutos = Math.floor((diff % 3600) / 60);
+    const segundos = diff % 60;
+
+    let texto = '';
+    if (horas > 0) texto += `${horas}h `;
+    if (minutos > 0 || horas > 0) texto += `${minutos}m `;
+    texto += `${segundos}s`;
+
+    tiempoEl.innerText = texto.trim();
+  }
+
+  actualizar();
+  setInterval(actualizar, 1000);
 }
+
+// HORA ACTUAL EN LA QUE SE HIZO EL PEDIDO
 
 function horaActual() {
   const ahora = new Date();
@@ -351,6 +432,71 @@ function getCSRFToken() {
   const cookie = document.cookie.split(";").find(c => c.trim().startsWith("csrftoken="));
   return cookie ? cookie.split("=")[1] : "";
 }
+
+function iniciarTiemposDesdeServidor() {
+  document.querySelectorAll('[id^="tiempo-"]').forEach(span => {
+    const inicioStr = span.getAttribute('data-inicio');
+    if (!inicioStr) return; // Solo aplica a los que vienen con data-inicio (servidor)
+
+    const inicio = new Date(inicioStr);
+
+    function actualizar() {
+      const diff = Math.floor((Date.now() - inicio) / 1000);
+      const horas = Math.floor(diff / 3600);
+      const minutos = Math.floor((diff % 3600) / 60);
+      const segundos = diff % 60;
+
+      let texto = '';
+      if (horas > 0) texto += `${horas}h `;
+      if (minutos > 0 || horas > 0) texto += `${minutos}m `;
+      texto += `${segundos}s`;
+
+      span.textContent = texto.trim();
+    }
+
+    actualizar();
+    setInterval(actualizar, 1000);
+  });
+}
+
+function iniciarTiemposDesdeServidor() {
+  const spans = document.querySelectorAll('[id^="tiempo-"]');
+
+  spans.forEach(span => {
+    const inicioStr = span.getAttribute('data-inicio');
+    if (!inicioStr) {
+      console.warn('Falta data-inicio en', span);
+      return;
+    }
+
+    const inicio = new Date(inicioStr);
+    if (isNaN(inicio.getTime())) {
+      console.warn('Fecha inválida en data-inicio:', inicioStr);
+      return;
+    }
+
+    function actualizar() {
+      const ahora = new Date();
+      const diff = Math.floor((ahora - inicio) / 1000); // segundos
+
+      const horas = Math.floor(diff / 3600);
+      const minutos = Math.floor((diff % 3600) / 60);
+      const segundos = diff % 60;
+
+      let texto = '';
+      if (horas > 0) texto += `${horas}h `;
+      if (minutos > 0 || horas > 0) texto += `${minutos}m `;
+      texto += `${segundos}s`;
+
+      span.textContent = texto.trim();
+    }
+
+    actualizar();
+    setInterval(actualizar, 1000);
+  });
+}
+
+document.addEventListener('DOMContentLoaded', iniciarTiemposDesdeServidor);
 
 
 

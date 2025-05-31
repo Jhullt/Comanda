@@ -22,38 +22,39 @@
 </header>
 
 <main>
-<!-- Vista de mesas -->
-<section id="vista-mesas">
-  <div class="contenedor-mesas">
-    {% with total_mesas=10 %}
-      {% for i in total_mesas|get_range %}
-        {% with numero=i|stringformat:"02d" %}
-          {% with mesa_id="Mesa "|concat:numero %}
-            {% with pedido=pedidos|get_mesa:mesa_id %}
-              {% if pedido %}
-                <div class="mesa activa" id="mesa-{{ numero }}" onclick="abrirCarta('Mesa {{ numero }}')">
-                  <div class="mesa-header">
-                    <span>{{ pedido.hora_creacion|time:"H:i" }}</span>
-                    <span><i class="fa-solid fa-user"></i> {{ pedido.comensales }}</span>
-                    <span id="tiempo-{{ pedido.numero_pedido }}">0m</span>
+  <!-- Vista de mesas -->
+  <section id="vista-mesas">
+    <div class="contenedor-mesas">
+      {% with total_mesas=10 %}
+        {% for i in total_mesas|get_range %}
+          {% with numero=i|stringformat:"02d" %}
+            {% with mesa_id="Mesa "|concat:numero %}
+              {% with pedido=pedidos|get_mesa:mesa_id %}
+                {% if pedido %}
+                <div class="mesa tarjeta-pedido" id="mesa-{{ numero }}" onclick="abrirCarta('Mesa {{ numero }}')" data-pedido="{{ pedido.numero_pedido }}" data-tiempo="{{ pedido.hora_creacion|date:'U' }}">
+                    <div class="tarjeta-header estado-preparacion">
+                      <span>{{ pedido.hora_creacion|time:"H:i" }}</span>
+                      <span><i class="fa-solid fa-user"></i> {{ pedido.comensales }}</span>
+                      <span id="tiempo-{{ pedido.numero_pedido }}" data-inicio="{{ pedido.hora_creacion|date:'c' }}">0s</span>
+                    </div>
+                    <div class="tarjeta-body">
+                      <h3 class="mesa-nombre">{{ pedido.mesa }}</h3>
+                      <p>Pedido {{ pedido.numero_pedido }}</p>
+                    </div>
                   </div>
-                  <div class="mesa-body">
-                    <h3 class="mesa-en-proceso">{{ pedido.mesa }}</h3>
-                    <p>Pedido {{ pedido.numero_pedido }}</p>
+                {% else %}
+                  <div class="mesa" id="mesa-{{ numero }}" onclick="abrirCarta('Mesa {{ numero }}')">
+                    Mesa {{ numero }}
                   </div>
-                </div>
-              {% else %}
-                <div class="mesa" id="mesa-{{ numero }}" onclick="abrirCarta('Mesa {{ numero }}')">
-                  Mesa {{ numero }}
-                </div>
-              {% endif %}
+                {% endif %}
+              {% endwith %}
             {% endwith %}
           {% endwith %}
-        {% endwith %}
-      {% endfor %}
-    {% endwith %}
-  </div>
-</section>
+        {% endfor %}
+      {% endwith %}
+    </div>
+  </section>
+  
 
   
   

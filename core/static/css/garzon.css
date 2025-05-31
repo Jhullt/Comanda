@@ -53,6 +53,9 @@ header {
   transform: translateY(-3px);
 }
 
+.mesa.activa{
+  box-shadow: 3px 3px 5px rgba(255, 130, 28, 0.649);
+}
 
 /* PROBANDO CAMBIO DEL ESTADO DEL PEDIDO EN LAS MESAS */
 
@@ -61,14 +64,19 @@ header {
   width: 160px;
   background: white;
   border-radius: 10px;
-  box-shadow: 3px 3px 5px rgba(0,0,0,0.2);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
   margin: 10px;
   font-family: 'Poppins', sans-serif;
   text-align: center;
+  padding: 0;
 }
 
+
 .tarjeta-header {
+  background-color: #e58e26;
   padding: 8px;
   color: white;
   font-weight: bold;
@@ -76,14 +84,16 @@ header {
   justify-content: space-between;
   align-items: center;
   font-size: 12px;
+  height: 40px; /* opcional para asegurar consistencia */
+  margin: 0; /* ✅ evita espacio blanco superior */
 }
 
 .estado-preparacion {
-  background-color: #e58e26; /* naranja */
+  background-color: #e58e26;
 }
 
 .estado-entregado {
-  background-color: #53c342; /* verde */
+  background-color: #53c342;
 }
 
 .tarjeta-body h3 {
